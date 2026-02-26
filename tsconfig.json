@@ -20,6 +20,12 @@
         },
         {
             "path": "./apps/transaction-service"
+        },
+        {
+            "path": "./apps/account-service-e2e"
+        },
+        {
+            "path": "./apps/account-service"
         }
     ]
 }
