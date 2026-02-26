@@ -1,0 +1,26 @@
+{
+    "name": "@frequency-app/transaction-service-e2e",
+    "version": "0.0.1",
+    "private": true,
+    "nx": {
+        "implicitDependencies": [
+            "@frequency-app/transaction-service"
+        ],
+        "targets": {
+            "e2e": {
+                "executor": "@nx/jest:jest",
+                "outputs": [
+                    "{projectRoot}/test-output/jest/coverage"
+                ],
+                "options": {
+                    "jestConfig": "apps/transaction-service-e2e/jest.config.cts",
+                    "passWithNoTests": true
+                },
+                "dependsOn": [
+                    "@frequency-app/transaction-service:build",
+                    "@frequency-app/transaction-service:serve"
+                ]
+            }
+        }
+    }
+}
