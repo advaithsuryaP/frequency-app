@@ -10,6 +10,7 @@ export class TransactionsController {
 
     @Post()
     createTransaction(@Body() transaction: any) {
-        return this.transactionsServiceClient.send('create_transaction', transaction);
+        console.log('createTransaction in the api gateway', transaction);
+        return this.transactionsServiceClient.send('createTransaction', transaction);
     }
 }
