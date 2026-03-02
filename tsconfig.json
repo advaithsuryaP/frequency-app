@@ -14,9 +14,6 @@
         },
         {
             "path": "./apps/user-service"
-        },
-        {
-            "path": "./apps/account-service"
         }
     ]
 }
