@@ -16,12 +16,6 @@
             "path": "./apps/user-service"
         },
         {
-            "path": "./apps/transaction-service-e2e"
-        },
-        {
-            "path": "./apps/transaction-service"
-        },
-        {
             "path": "./apps/account-service-e2e"
         },
         {
