@@ -1,19 +1,14 @@
-import { Controller, Get, Post, Body, Inject, OnModuleInit, Param } from '@nestjs/common';
-import type { ClientGrpc } from '@nestjs/microservices';
-import { CreateWaveRequest, GetWaveRequest, protobufPackage, WavesService } from '@frequency-app/waves-contracts';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { WavesService } from './waves.service';
+import { CreateWaveDto } from './dto/create-wave.dto';
 
 @Controller('waves')
-export class WavesController implements OnModuleInit {
-    private wavesService!: WavesService;
-    constructor(@Inject(protobufPackage) private readonly client: ClientGrpc) {}
-
-    onModuleInit() {
-        this.wavesService = this.client.getService<WavesService>('WavesService');
-    }
+export class WavesController {
+    constructor(private readonly wavesService: WavesService) {}
 
     @Post()
-    create(@Body() createWaveRequest: CreateWaveRequest) {
-        return this.wavesService.CreateWave(createWaveRequest);
+    create(@Body() createWaveDto: CreateWaveDto) {
+        return this.wavesService.create(createWaveDto);
     }
 
     // @Get()
@@ -23,8 +18,7 @@ export class WavesController implements OnModuleInit {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        const getWaveRequest: GetWaveRequest = { waveId: Number(id) };
-        return this.wavesService.GetWave(getWaveRequest);
+        return this.wavesService.findOne(id);
     }
 
     // @Patch(':id')

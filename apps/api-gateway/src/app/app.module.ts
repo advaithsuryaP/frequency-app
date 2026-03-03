@@ -6,6 +6,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { protobufPackage } from '@frequency-app/waves-contracts';
 import { join } from 'path';
 import { WavesController } from './waves/waves.controller';
+import { WavesService } from './waves/waves.service';
 
 @Module({
     imports: [
@@ -21,6 +22,6 @@ import { WavesController } from './waves/waves.controller';
         ])
     ],
     controllers: [AppController, WavesController],
-    providers: [AppService]
+    providers: [AppService, WavesService]
 })
 export class AppModule {}
