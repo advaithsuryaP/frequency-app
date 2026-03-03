@@ -56,7 +56,8 @@
                 "apps/api-gateway-e2e/**/*",
                 "apps/user-service-e2e/**/*",
                 "apps/transaction-service-e2e/**/*",
-                "apps/account-service-e2e/**/*"
+                "apps/account-service-e2e/**/*",
+                "apps/waves-e2e/**/*"
             ]
         }
     ],

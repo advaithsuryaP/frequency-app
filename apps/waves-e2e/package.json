@@ -1,0 +1,26 @@
+{
+    "name": "@frequency-app/waves-e2e",
+    "version": "0.0.1",
+    "private": true,
+    "nx": {
+        "implicitDependencies": [
+            "@frequency-app/waves"
+        ],
+        "targets": {
+            "e2e": {
+                "executor": "@nx/jest:jest",
+                "outputs": [
+                    "{projectRoot}/test-output/jest/coverage"
+                ],
+                "options": {
+                    "jestConfig": "apps/waves-e2e/jest.config.cts",
+                    "passWithNoTests": true
+                },
+                "dependsOn": [
+                    "@frequency-app/waves:build",
+                    "@frequency-app/waves:serve"
+                ]
+            }
+        }
+    }
+}
