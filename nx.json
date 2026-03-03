@@ -62,6 +62,17 @@
         }
     ],
     "targetDefaults": {
+        "build": {
+            "options": {
+                "assets": [
+                    {
+                        "glob": "**/*",
+                        "input": "libs/waves/waves-contracts/src/proto",
+                        "output": "proto"
+                    }
+                ]
+            }
+        },
         "test": {
             "dependsOn": ["^build"]
         }

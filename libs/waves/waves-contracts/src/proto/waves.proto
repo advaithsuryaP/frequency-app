@@ -5,7 +5,7 @@ package waves;
 service WavesService {
     rpc CreateWave(CreateWaveRequest) returns (CreateWaveResponse);
     rpc GetWave(GetWaveRequest) returns (GetWaveResponse);
-};
+}
 
 message CreateWaveRequest {
     string content = 1;
