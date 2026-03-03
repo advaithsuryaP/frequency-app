@@ -14,6 +14,12 @@
         },
         {
             "path": "./apps/waves"
+        },
+        {
+            "path": "./libs/waves/waves-contracts"
+        },
+        {
+            "path": "./libs/waves/waves-internal"
         }
     ]
 }

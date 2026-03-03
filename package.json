@@ -38,7 +38,8 @@
     },
     "workspaces": [
         "packages/*",
-        "apps/*"
+        "apps/*",
+        "libs/waves/*"
     ],
     "dependencies": {
         "@grpc/grpc-js": "^1.14.3",
@@ -50,6 +51,7 @@
         "@nestjs/platform-express": "^11.0.0",
         "axios": "^1.6.0",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.8.0"
+        "rxjs": "^7.8.0",
+        "ts-proto": "^2.11.4"
     }
 }
