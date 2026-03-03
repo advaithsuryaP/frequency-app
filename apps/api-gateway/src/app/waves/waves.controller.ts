@@ -1,31 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CreateWaveDto } from './dto/create-wave.dto';
-import { UpdateWaveDto } from './dto/update-wave.dto';
+import { Controller, Get, Post, Body, Inject, OnModuleInit, Param } from '@nestjs/common';
+import type { ClientGrpc } from '@nestjs/microservices';
+import { CreateWaveRequest, GetWaveRequest, protobufPackage, WavesService } from '@frequency-app/waves-contracts';
 
 @Controller('waves')
-export class WavesController {
-    @Post()
-    create(@Body() createWaveDto: CreateWaveDto) {
-        // return this.wavesService.create(createWaveDto);
+export class WavesController implements OnModuleInit {
+    private wavesService!: WavesService;
+    constructor(@Inject(protobufPackage) private readonly client: ClientGrpc) {}
+
+    onModuleInit() {
+        this.wavesService = this.client.getService<WavesService>('WavesService');
     }
 
-    @Get()
-    findAll() {
-        // return this.wavesService.findAll();
+    @Post()
+    create(@Body() createWaveRequest: CreateWaveRequest) {
+        return this.wavesService.CreateWave(createWaveRequest);
     }
+
+    // @Get()
+    // findAll() {
+    //     return this.wavesService.findAll();
+    // }
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        // return this.wavesService.findOne(+id);
+        const getWaveRequest: GetWaveRequest = { waveId: Number(id) };
+        return this.wavesService.GetWave(getWaveRequest);
     }
 
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateWaveDto: UpdateWaveDto) {
-        // return this.wavesService.update(+id, updateWaveDto);
-    }
+    // @Patch(':id')
+    // update(@Param('id') id: string, @Body() updateWaveDto: UpdateWaveDto) {
+    //     return this.wavesService.update(+id, updateWaveDto);
+    // }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        // return this.wavesService.remove(+id);
-    }
+    // @Delete(':id')
+    // remove(@Param('id') id: string) {
+    //     return this.wavesService.remove(+id);
+    // }
 }
