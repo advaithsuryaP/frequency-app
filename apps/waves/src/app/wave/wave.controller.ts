@@ -1,22 +1,24 @@
 import { Controller } from '@nestjs/common';
 import {
-    CreateWaveRequest,
-    CreateWaveResponse,
     GetWaveRequest,
     GetWaveResponse,
-    WavesService
+    CreateWaveRequest,
+    CreateWaveResponse,
+    WavesServiceController,
+    WavesServiceControllerMethods
 } from '@frequency-app/waves-contracts';
-import { GrpcMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
 @Controller()
-export class WaveController implements WavesService {
-    @GrpcMethod('WavesService', 'CreateWave')
-    async CreateWave(request: CreateWaveRequest): Promise<CreateWaveResponse> {
-        return { waveId: 1 };
+@WavesServiceControllerMethods()
+export class WaveController implements WavesServiceController {
+    getWave(request: GetWaveRequest): Promise<GetWaveResponse> | Observable<GetWaveResponse> | GetWaveResponse {
+        return { content: 'Hello, world!', createdAt: new Date().toISOString() };
     }
 
-    @GrpcMethod('WavesService', 'GetWave')
-    async GetWave(request: GetWaveRequest): Promise<GetWaveResponse> {
-        return { content: 'Hello, world!', createdAt: Math.floor(Date.now() / 1000) };
+    createWave(
+        request: CreateWaveRequest
+    ): Promise<CreateWaveResponse> | Observable<CreateWaveResponse> | CreateWaveResponse {
+        return { waveId: '1' };
     }
 }

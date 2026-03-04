@@ -2,7 +2,9 @@
     "name": "@frequency-app/source",
     "version": "0.0.0",
     "license": "MIT",
-    "scripts": {},
+    "scripts": {
+        "generate-proto-types": "npx protoc -I=libs/waves/waves-contracts/src/proto --ts_proto_out=libs/waves/waves-contracts/src/types --ts_proto_opt=nestJs=true waves.proto"
+    },
     "private": true,
     "devDependencies": {
         "@eslint/js": "^9.8.0",

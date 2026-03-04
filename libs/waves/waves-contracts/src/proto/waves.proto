@@ -12,14 +12,14 @@ message CreateWaveRequest {
 }
 
 message CreateWaveResponse {
-    int32 wave_id = 1;
+    string wave_id = 1;
 }
 
 message GetWaveRequest {
-    int32 wave_id = 1;
+    string wave_id = 1;
 }
 
 message GetWaveResponse {
     string content = 1;
-    int32 created_at = 2;
+    string created_at = 2;
 }

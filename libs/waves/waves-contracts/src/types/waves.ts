@@ -5,7 +5,8 @@
 // source: waves.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
 export const protobufPackage = 'waves';
 
@@ -14,342 +15,47 @@ export interface CreateWaveRequest {
 }
 
 export interface CreateWaveResponse {
-    waveId: number;
+    waveId: string;
 }
 
 export interface GetWaveRequest {
-    waveId: number;
+    waveId: string;
 }
 
 export interface GetWaveResponse {
     content: string;
-    createdAt: number;
+    createdAt: string;
 }
 
-function createBaseCreateWaveRequest(): CreateWaveRequest {
-    return { content: '' };
+export const WAVES_PACKAGE_NAME = 'waves';
+
+export interface WavesServiceClient {
+    createWave(request: CreateWaveRequest): Observable<CreateWaveResponse>;
+
+    getWave(request: GetWaveRequest): Observable<GetWaveResponse>;
 }
 
-export const CreateWaveRequest: MessageFns<CreateWaveRequest> = {
-    encode(message: CreateWaveRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-        if (message.content !== '') {
-            writer.uint32(10).string(message.content);
-        }
-        return writer;
-    },
+export interface WavesServiceController {
+    createWave(
+        request: CreateWaveRequest
+    ): Promise<CreateWaveResponse> | Observable<CreateWaveResponse> | CreateWaveResponse;
 
-    decode(input: BinaryReader | Uint8Array, length?: number): CreateWaveRequest {
-        const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-        const end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseCreateWaveRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1: {
-                    if (tag !== 10) {
-                        break;
-                    }
-
-                    message.content = reader.string();
-                    continue;
-                }
-            }
-            if ((tag & 7) === 4 || tag === 0) {
-                break;
-            }
-            reader.skip(tag & 7);
-        }
-        return message;
-    },
-
-    fromJSON(object: any): CreateWaveRequest {
-        return { content: isSet(object.content) ? globalThis.String(object.content) : '' };
-    },
-
-    toJSON(message: CreateWaveRequest): unknown {
-        const obj: any = {};
-        if (message.content !== '') {
-            obj.content = message.content;
-        }
-        return obj;
-    },
-
-    create<I extends Exact<DeepPartial<CreateWaveRequest>, I>>(base?: I): CreateWaveRequest {
-        return CreateWaveRequest.fromPartial(base ?? ({} as any));
-    },
-    fromPartial<I extends Exact<DeepPartial<CreateWaveRequest>, I>>(object: I): CreateWaveRequest {
-        const message = createBaseCreateWaveRequest();
-        message.content = object.content ?? '';
-        return message;
-    }
-};
-
-function createBaseCreateWaveResponse(): CreateWaveResponse {
-    return { waveId: 0 };
+    getWave(request: GetWaveRequest): Promise<GetWaveResponse> | Observable<GetWaveResponse> | GetWaveResponse;
 }
 
-export const CreateWaveResponse: MessageFns<CreateWaveResponse> = {
-    encode(message: CreateWaveResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-        if (message.waveId !== 0) {
-            writer.uint32(8).int32(message.waveId);
+export function WavesServiceControllerMethods() {
+    return function (constructor: Function) {
+        const grpcMethods: string[] = ['createWave', 'getWave'];
+        for (const method of grpcMethods) {
+            const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+            GrpcMethod('WavesService', method)(constructor.prototype[method], method, descriptor);
         }
-        return writer;
-    },
-
-    decode(input: BinaryReader | Uint8Array, length?: number): CreateWaveResponse {
-        const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-        const end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseCreateWaveResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1: {
-                    if (tag !== 8) {
-                        break;
-                    }
-
-                    message.waveId = reader.int32();
-                    continue;
-                }
-            }
-            if ((tag & 7) === 4 || tag === 0) {
-                break;
-            }
-            reader.skip(tag & 7);
+        const grpcStreamMethods: string[] = [];
+        for (const method of grpcStreamMethods) {
+            const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+            GrpcStreamMethod('WavesService', method)(constructor.prototype[method], method, descriptor);
         }
-        return message;
-    },
-
-    fromJSON(object: any): CreateWaveResponse {
-        return {
-            waveId: isSet(object.waveId)
-                ? globalThis.Number(object.waveId)
-                : isSet(object.wave_id)
-                  ? globalThis.Number(object.wave_id)
-                  : 0
-        };
-    },
-
-    toJSON(message: CreateWaveResponse): unknown {
-        const obj: any = {};
-        if (message.waveId !== 0) {
-            obj.waveId = Math.round(message.waveId);
-        }
-        return obj;
-    },
-
-    create<I extends Exact<DeepPartial<CreateWaveResponse>, I>>(base?: I): CreateWaveResponse {
-        return CreateWaveResponse.fromPartial(base ?? ({} as any));
-    },
-    fromPartial<I extends Exact<DeepPartial<CreateWaveResponse>, I>>(object: I): CreateWaveResponse {
-        const message = createBaseCreateWaveResponse();
-        message.waveId = object.waveId ?? 0;
-        return message;
-    }
-};
-
-function createBaseGetWaveRequest(): GetWaveRequest {
-    return { waveId: 0 };
+    };
 }
 
-export const GetWaveRequest: MessageFns<GetWaveRequest> = {
-    encode(message: GetWaveRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-        if (message.waveId !== 0) {
-            writer.uint32(8).int32(message.waveId);
-        }
-        return writer;
-    },
-
-    decode(input: BinaryReader | Uint8Array, length?: number): GetWaveRequest {
-        const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-        const end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetWaveRequest();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1: {
-                    if (tag !== 8) {
-                        break;
-                    }
-
-                    message.waveId = reader.int32();
-                    continue;
-                }
-            }
-            if ((tag & 7) === 4 || tag === 0) {
-                break;
-            }
-            reader.skip(tag & 7);
-        }
-        return message;
-    },
-
-    fromJSON(object: any): GetWaveRequest {
-        return {
-            waveId: isSet(object.waveId)
-                ? globalThis.Number(object.waveId)
-                : isSet(object.wave_id)
-                  ? globalThis.Number(object.wave_id)
-                  : 0
-        };
-    },
-
-    toJSON(message: GetWaveRequest): unknown {
-        const obj: any = {};
-        if (message.waveId !== 0) {
-            obj.waveId = Math.round(message.waveId);
-        }
-        return obj;
-    },
-
-    create<I extends Exact<DeepPartial<GetWaveRequest>, I>>(base?: I): GetWaveRequest {
-        return GetWaveRequest.fromPartial(base ?? ({} as any));
-    },
-    fromPartial<I extends Exact<DeepPartial<GetWaveRequest>, I>>(object: I): GetWaveRequest {
-        const message = createBaseGetWaveRequest();
-        message.waveId = object.waveId ?? 0;
-        return message;
-    }
-};
-
-function createBaseGetWaveResponse(): GetWaveResponse {
-    return { content: '', createdAt: 0 };
-}
-
-export const GetWaveResponse: MessageFns<GetWaveResponse> = {
-    encode(message: GetWaveResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-        if (message.content !== '') {
-            writer.uint32(10).string(message.content);
-        }
-        if (message.createdAt !== 0) {
-            writer.uint32(16).int32(message.createdAt);
-        }
-        return writer;
-    },
-
-    decode(input: BinaryReader | Uint8Array, length?: number): GetWaveResponse {
-        const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-        const end = length === undefined ? reader.len : reader.pos + length;
-        const message = createBaseGetWaveResponse();
-        while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-                case 1: {
-                    if (tag !== 10) {
-                        break;
-                    }
-
-                    message.content = reader.string();
-                    continue;
-                }
-                case 2: {
-                    if (tag !== 16) {
-                        break;
-                    }
-
-                    message.createdAt = reader.int32();
-                    continue;
-                }
-            }
-            if ((tag & 7) === 4 || tag === 0) {
-                break;
-            }
-            reader.skip(tag & 7);
-        }
-        return message;
-    },
-
-    fromJSON(object: any): GetWaveResponse {
-        return {
-            content: isSet(object.content) ? globalThis.String(object.content) : '',
-            createdAt: isSet(object.createdAt)
-                ? globalThis.Number(object.createdAt)
-                : isSet(object.created_at)
-                  ? globalThis.Number(object.created_at)
-                  : 0
-        };
-    },
-
-    toJSON(message: GetWaveResponse): unknown {
-        const obj: any = {};
-        if (message.content !== '') {
-            obj.content = message.content;
-        }
-        if (message.createdAt !== 0) {
-            obj.createdAt = Math.round(message.createdAt);
-        }
-        return obj;
-    },
-
-    create<I extends Exact<DeepPartial<GetWaveResponse>, I>>(base?: I): GetWaveResponse {
-        return GetWaveResponse.fromPartial(base ?? ({} as any));
-    },
-    fromPartial<I extends Exact<DeepPartial<GetWaveResponse>, I>>(object: I): GetWaveResponse {
-        const message = createBaseGetWaveResponse();
-        message.content = object.content ?? '';
-        message.createdAt = object.createdAt ?? 0;
-        return message;
-    }
-};
-
-export interface WavesService {
-    CreateWave(request: CreateWaveRequest): Promise<CreateWaveResponse>;
-    GetWave(request: GetWaveRequest): Promise<GetWaveResponse>;
-}
-
-export const WavesServiceServiceName = 'waves.WavesService';
-export class WavesServiceClientImpl implements WavesService {
-    private readonly rpc: Rpc;
-    private readonly service: string;
-    constructor(rpc: Rpc, opts?: { service?: string }) {
-        this.service = opts?.service || WavesServiceServiceName;
-        this.rpc = rpc;
-        this.CreateWave = this.CreateWave.bind(this);
-        this.GetWave = this.GetWave.bind(this);
-    }
-    CreateWave(request: CreateWaveRequest): Promise<CreateWaveResponse> {
-        const data = CreateWaveRequest.encode(request).finish();
-        const promise = this.rpc.request(this.service, 'CreateWave', data);
-        return promise.then(data => CreateWaveResponse.decode(new BinaryReader(data)));
-    }
-
-    GetWave(request: GetWaveRequest): Promise<GetWaveResponse> {
-        const data = GetWaveRequest.encode(request).finish();
-        const promise = this.rpc.request(this.service, 'GetWave', data);
-        return promise.then(data => GetWaveResponse.decode(new BinaryReader(data)));
-    }
-}
-
-interface Rpc {
-    request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-}
-
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
-
-export type DeepPartial<T> = T extends Builtin
-    ? T
-    : T extends globalThis.Array<infer U>
-      ? globalThis.Array<DeepPartial<U>>
-      : T extends ReadonlyArray<infer U>
-        ? ReadonlyArray<DeepPartial<U>>
-        : T extends {}
-          ? { [K in keyof T]?: DeepPartial<T[K]> }
-          : Partial<T>;
-
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-    ? P
-    : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
-
-function isSet(value: any): boolean {
-    return value !== null && value !== undefined;
-}
-
-export interface MessageFns<T> {
-    encode(message: T, writer?: BinaryWriter): BinaryWriter;
-    decode(input: BinaryReader | Uint8Array, length?: number): T;
-    fromJSON(object: any): T;
-    toJSON(message: T): unknown;
-    create<I extends Exact<DeepPartial<T>, I>>(base?: I): T;
-    fromPartial<I extends Exact<DeepPartial<T>, I>>(object: I): T;
-}
+export const WAVES_SERVICE_NAME = 'WavesService';

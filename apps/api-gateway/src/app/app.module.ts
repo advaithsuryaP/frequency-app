@@ -3,19 +3,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Transport } from '@nestjs/microservices';
 import { ClientsModule } from '@nestjs/microservices';
-import { protobufPackage } from '@frequency-app/waves-contracts';
 import { join } from 'path';
 import { WavesController } from './waves/waves.controller';
 import { WavesService } from './waves/waves.service';
+import { WAVES_PACKAGE_NAME } from '@frequency-app/waves-contracts';
 
 @Module({
     imports: [
         ClientsModule.register([
             {
-                name: protobufPackage,
+                name: WAVES_PACKAGE_NAME,
                 transport: Transport.GRPC,
                 options: {
-                    package: protobufPackage,
+                    package: WAVES_PACKAGE_NAME,
                     protoPath: join(__dirname, 'proto/waves.proto')
                 }
             }
