@@ -5,6 +5,7 @@ package waves;
 service WavesService {
     rpc CreateWave(CreateWaveRequest) returns (CreateWaveResponse);
     rpc GetWave(GetWaveRequest) returns (GetWaveResponse);
+    rpc GetWaves(GetWavesRequest) returns (GetWavesResponse);
 }
 
 message CreateWaveRequest {
@@ -13,6 +14,23 @@ message CreateWaveRequest {
 
 message CreateWaveResponse {
     string wave_id = 1;
+    string content = 2;
+    string created_at = 3;
+}
+
+message GetWavesRequest {
+    int32 limit = 1;
+    int32 offset = 2;
+}
+
+message GetWavesResponse {
+    repeated Wave waves = 1;
+}
+
+message Wave {
+    string wave_id = 1;
+    string content = 2;
+    string created_at = 3;
 }
 
 message GetWaveRequest {
@@ -20,6 +38,7 @@ message GetWaveRequest {
 }
 
 message GetWaveResponse {
-    string content = 1;
-    string created_at = 2;
+    string wave_id = 1;
+    string content = 2;
+    string created_at = 3;
 }

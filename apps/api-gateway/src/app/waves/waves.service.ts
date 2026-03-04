@@ -5,6 +5,8 @@ import {
     CreateWaveResponse,
     GetWaveRequest,
     GetWaveResponse,
+    GetWavesRequest,
+    GetWavesResponse,
     WAVES_PACKAGE_NAME,
     WAVES_SERVICE_NAME,
     WavesServiceClient
@@ -24,6 +26,11 @@ export class WavesService implements OnModuleInit {
     async create(createWaveDto: CreateWaveDto): Promise<CreateWaveResponse> {
         const createWaveRequest: CreateWaveRequest = { content: createWaveDto.content };
         return firstValueFrom(this.wavesServiceClient.createWave(createWaveRequest));
+    }
+
+    async findAll(): Promise<GetWavesResponse> {
+        const getWavesRequest: GetWavesRequest = { limit: 10, offset: 0 };
+        return firstValueFrom(this.wavesServiceClient.getWaves(getWavesRequest));
     }
 
     async findOne(waveId: string): Promise<GetWaveResponse> {

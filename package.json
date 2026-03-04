@@ -10,7 +10,7 @@
             "generate-proto-types": {
                 "cache": true,
                 "inputs": [
-                    "{workspaceRoot}/libs/waves/waves-contracts/src/proto"
+                    "{workspaceRoot}/libs/waves/waves-contracts/src/proto/*.proto"
                 ]
             }
         }

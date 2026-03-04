@@ -11,10 +11,10 @@ export class WavesController {
         return this.wavesService.create(createWaveDto);
     }
 
-    // @Get()
-    // findAll() {
-    //     return this.wavesService.findAll();
-    // }
+    @Get()
+    findAll() {
+        return this.wavesService.findAll();
+    }
 
     @Get(':id')
     findOne(@Param('id') id: string) {

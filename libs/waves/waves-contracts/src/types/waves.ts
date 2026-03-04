@@ -16,6 +16,23 @@ export interface CreateWaveRequest {
 
 export interface CreateWaveResponse {
     waveId: string;
+    content: string;
+    createdAt: string;
+}
+
+export interface GetWavesRequest {
+    limit: number;
+    offset: number;
+}
+
+export interface GetWavesResponse {
+    waves: Wave[];
+}
+
+export interface Wave {
+    waveId: string;
+    content: string;
+    createdAt: string;
 }
 
 export interface GetWaveRequest {
@@ -23,6 +40,7 @@ export interface GetWaveRequest {
 }
 
 export interface GetWaveResponse {
+    waveId: string;
     content: string;
     createdAt: string;
 }
@@ -33,6 +51,8 @@ export interface WavesServiceClient {
     createWave(request: CreateWaveRequest): Observable<CreateWaveResponse>;
 
     getWave(request: GetWaveRequest): Observable<GetWaveResponse>;
+
+    getWaves(request: GetWavesRequest): Observable<GetWavesResponse>;
 }
 
 export interface WavesServiceController {
@@ -41,11 +61,13 @@ export interface WavesServiceController {
     ): Promise<CreateWaveResponse> | Observable<CreateWaveResponse> | CreateWaveResponse;
 
     getWave(request: GetWaveRequest): Promise<GetWaveResponse> | Observable<GetWaveResponse> | GetWaveResponse;
+
+    getWaves(request: GetWavesRequest): Promise<GetWavesResponse> | Observable<GetWavesResponse> | GetWavesResponse;
 }
 
 export function WavesServiceControllerMethods() {
     return function (constructor: Function) {
-        const grpcMethods: string[] = ['createWave', 'getWave'];
+        const grpcMethods: string[] = ['createWave', 'getWave', 'getWaves'];
         for (const method of grpcMethods) {
             const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
             GrpcMethod('WavesService', method)(constructor.prototype[method], method, descriptor);
