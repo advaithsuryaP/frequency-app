@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException, OnModuleInit } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import {
     CreateWaveRequest,
@@ -13,6 +13,7 @@ import {
 } from '@frequency-app/waves-contracts';
 import { CreateWaveDto } from './dto/create-wave.dto';
 import { firstValueFrom } from 'rxjs';
+import { status } from '@grpc/grpc-js';
 
 @Injectable()
 export class WavesService implements OnModuleInit {
@@ -24,8 +25,15 @@ export class WavesService implements OnModuleInit {
     }
 
     async create(createWaveDto: CreateWaveDto): Promise<CreateWaveResponse> {
-        const createWaveRequest: CreateWaveRequest = { content: createWaveDto.content };
-        return firstValueFrom(this.wavesServiceClient.createWave(createWaveRequest));
+        try {
+            const createWaveRequest: CreateWaveRequest = { content: createWaveDto.content };
+            return firstValueFrom(this.wavesServiceClient.createWave(createWaveRequest));
+        } catch (error: any) {
+            if (error?.code === status.NOT_FOUND) {
+                throw new NotFoundException(error.message);
+            }
+            throw new InternalServerErrorException();
+        }
     }
 
     async findAll(): Promise<GetWavesResponse> {
