@@ -3,19 +3,14 @@ syntax = "proto3";
 package waves;
 
 service WavesService {
-    rpc CreateWave(CreateWaveRequest) returns (CreateWaveResponse);
-    rpc GetWave(GetWaveRequest) returns (GetWaveResponse);
+    rpc CreateWave(CreateWaveRequest) returns (Wave);
+    rpc GetWave(GetWaveRequest) returns (Wave);
     rpc GetWaves(GetWavesRequest) returns (GetWavesResponse);
+    rpc DeleteWave(DeleteWaveRequest) returns (DeleteWaveResponse);
 }
 
 message CreateWaveRequest {
     string content = 1;
-}
-
-message CreateWaveResponse {
-    string wave_id = 1;
-    string content = 2;
-    string created_at = 3;
 }
 
 message GetWavesRequest {
@@ -31,14 +26,17 @@ message Wave {
     string wave_id = 1;
     string content = 2;
     string created_at = 3;
+    string updated_at = 4;
 }
 
 message GetWaveRequest {
     string wave_id = 1;
 }
 
-message GetWaveResponse {
+message DeleteWaveRequest {
     string wave_id = 1;
-    string content = 2;
-    string created_at = 3;
+}
+
+message DeleteWaveResponse {
+    bool success = 1;
 }

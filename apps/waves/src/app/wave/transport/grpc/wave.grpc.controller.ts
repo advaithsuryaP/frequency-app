@@ -1,13 +1,14 @@
 import { Controller } from '@nestjs/common';
 import {
+    Wave,
     GetWaveRequest,
     GetWavesRequest,
-    GetWaveResponse,
     GetWavesResponse,
     CreateWaveRequest,
-    CreateWaveResponse,
     WavesServiceController,
-    WavesServiceControllerMethods
+    WavesServiceControllerMethods,
+    DeleteWaveRequest,
+    DeleteWaveResponse
 } from '@frequency-app/waves-contracts';
 import { WaveService } from '../../application/services/wave.service';
 
@@ -16,10 +17,15 @@ import { WaveService } from '../../application/services/wave.service';
 export class WaveGrpcController implements WavesServiceController {
     constructor(private readonly waveService: WaveService) {}
 
-    async createWave(request: CreateWaveRequest): Promise<CreateWaveResponse> {
+    async createWave(request: CreateWaveRequest): Promise<Wave> {
         const content = request.content;
         const wave = await this.waveService.createWave(content);
-        return { waveId: wave.id, content: wave.content, createdAt: wave.createdAt.toISOString() };
+        return {
+            waveId: wave.id,
+            content: wave.content,
+            createdAt: wave.createdAt.toISOString(),
+            updatedAt: wave.updatedAt.toISOString()
+        };
     }
 
     async getWaves(request: GetWavesRequest): Promise<GetWavesResponse> {
@@ -28,13 +34,24 @@ export class WaveGrpcController implements WavesServiceController {
             waves: waves.map(wave => ({
                 waveId: wave.id,
                 content: wave.content,
-                createdAt: wave.createdAt.toISOString()
+                createdAt: wave.createdAt.toISOString(),
+                updatedAt: wave.updatedAt.toISOString()
             }))
         };
     }
 
-    async getWave(request: GetWaveRequest): Promise<GetWaveResponse> {
+    async getWave(request: GetWaveRequest): Promise<Wave> {
         const wave = await this.waveService.getWave(request.waveId);
-        return { waveId: wave.id, content: wave.content, createdAt: wave.createdAt.toISOString() };
+        return {
+            waveId: wave.id,
+            content: wave.content,
+            createdAt: wave.createdAt.toISOString(),
+            updatedAt: wave.updatedAt.toISOString()
+        };
+    }
+
+    async deleteWave(request: DeleteWaveRequest): Promise<DeleteWaveResponse> {
+        const success = await this.waveService.deleteWave(request.waveId);
+        return { success };
     }
 }

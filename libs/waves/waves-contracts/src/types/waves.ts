@@ -5,79 +5,80 @@
 // source: waves.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export const protobufPackage = 'waves';
+export const protobufPackage = "waves";
 
 export interface CreateWaveRequest {
-    content: string;
-}
-
-export interface CreateWaveResponse {
-    waveId: string;
-    content: string;
-    createdAt: string;
+  content: string;
 }
 
 export interface GetWavesRequest {
-    limit: number;
-    offset: number;
+  limit: number;
+  offset: number;
 }
 
 export interface GetWavesResponse {
-    waves: Wave[];
+  waves: Wave[];
 }
 
 export interface Wave {
-    waveId: string;
-    content: string;
-    createdAt: string;
+  waveId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface GetWaveRequest {
-    waveId: string;
+  waveId: string;
 }
 
-export interface GetWaveResponse {
-    waveId: string;
-    content: string;
-    createdAt: string;
+export interface DeleteWaveRequest {
+  waveId: string;
 }
 
-export const WAVES_PACKAGE_NAME = 'waves';
+export interface DeleteWaveResponse {
+  success: boolean;
+}
+
+export const WAVES_PACKAGE_NAME = "waves";
 
 export interface WavesServiceClient {
-    createWave(request: CreateWaveRequest): Observable<CreateWaveResponse>;
+  createWave(request: CreateWaveRequest): Observable<Wave>;
 
-    getWave(request: GetWaveRequest): Observable<GetWaveResponse>;
+  getWave(request: GetWaveRequest): Observable<Wave>;
 
-    getWaves(request: GetWavesRequest): Observable<GetWavesResponse>;
+  getWaves(request: GetWavesRequest): Observable<GetWavesResponse>;
+
+  deleteWave(request: DeleteWaveRequest): Observable<DeleteWaveResponse>;
 }
 
 export interface WavesServiceController {
-    createWave(
-        request: CreateWaveRequest
-    ): Promise<CreateWaveResponse> | Observable<CreateWaveResponse> | CreateWaveResponse;
+  createWave(request: CreateWaveRequest): Promise<Wave> | Observable<Wave> | Wave;
 
-    getWave(request: GetWaveRequest): Promise<GetWaveResponse> | Observable<GetWaveResponse> | GetWaveResponse;
+  getWave(request: GetWaveRequest): Promise<Wave> | Observable<Wave> | Wave;
 
-    getWaves(request: GetWavesRequest): Promise<GetWavesResponse> | Observable<GetWavesResponse> | GetWavesResponse;
+  getWaves(request: GetWavesRequest): Promise<GetWavesResponse> | Observable<GetWavesResponse> | GetWavesResponse;
+
+  deleteWave(
+    request: DeleteWaveRequest,
+  ): Promise<DeleteWaveResponse> | Observable<DeleteWaveResponse> | DeleteWaveResponse;
 }
 
 export function WavesServiceControllerMethods() {
-    return function (constructor: Function) {
-        const grpcMethods: string[] = ['createWave', 'getWave', 'getWaves'];
-        for (const method of grpcMethods) {
-            const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-            GrpcMethod('WavesService', method)(constructor.prototype[method], method, descriptor);
-        }
-        const grpcStreamMethods: string[] = [];
-        for (const method of grpcStreamMethods) {
-            const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-            GrpcStreamMethod('WavesService', method)(constructor.prototype[method], method, descriptor);
-        }
-    };
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["createWave", "getWave", "getWaves", "deleteWave"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("WavesService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("WavesService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
 }
 
-export const WAVES_SERVICE_NAME = 'WavesService';
+export const WAVES_SERVICE_NAME = "WavesService";

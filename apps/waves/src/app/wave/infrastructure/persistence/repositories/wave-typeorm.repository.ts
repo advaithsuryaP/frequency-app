@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WaveEntity } from '../entities/wave.entity';
@@ -27,5 +27,10 @@ export class WaveTypeormRepository implements IWaveRepository {
     async findOne(waveId: string): Promise<WaveModel | null> {
         const entity = await this.typeorm.findOne({ where: { id: waveId } });
         return entity ? WaveMapper.toDomain(entity) : null;
+    }
+
+    async delete(waveId: string): Promise<number> {
+        const result: DeleteResult = await this.typeorm.delete({ id: waveId });
+        return result.affected ?? 0;
     }
 }

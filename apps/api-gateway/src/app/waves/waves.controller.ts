@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { WavesService } from './waves.service';
 import { CreateWaveDto } from './dto/create-wave.dto';
 
@@ -26,8 +26,8 @@ export class WavesController {
     //     return this.wavesService.update(+id, updateWaveDto);
     // }
 
-    // @Delete(':id')
-    // remove(@Param('id') id: string) {
-    //     return this.wavesService.remove(+id);
-    // }
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.wavesService.remove(id);
+    }
 }

@@ -1,15 +1,16 @@
 import { Inject, Injectable, InternalServerErrorException, NotFoundException, OnModuleInit } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import {
+    Wave,
     CreateWaveRequest,
-    CreateWaveResponse,
     GetWaveRequest,
-    GetWaveResponse,
     GetWavesRequest,
     GetWavesResponse,
     WAVES_PACKAGE_NAME,
     WAVES_SERVICE_NAME,
-    WavesServiceClient
+    WavesServiceClient,
+    DeleteWaveRequest,
+    DeleteWaveResponse
 } from '@frequency-app/waves-contracts';
 import { CreateWaveDto } from './dto/create-wave.dto';
 import { firstValueFrom } from 'rxjs';
@@ -24,7 +25,7 @@ export class WavesService implements OnModuleInit {
         this.wavesServiceClient = this.client.getService<WavesServiceClient>(WAVES_SERVICE_NAME);
     }
 
-    async create(createWaveDto: CreateWaveDto): Promise<CreateWaveResponse> {
+    async create(createWaveDto: CreateWaveDto): Promise<Wave> {
         try {
             const createWaveRequest: CreateWaveRequest = { content: createWaveDto.content };
             return firstValueFrom(this.wavesServiceClient.createWave(createWaveRequest));
@@ -41,12 +42,36 @@ export class WavesService implements OnModuleInit {
         return firstValueFrom(this.wavesServiceClient.getWaves(getWavesRequest));
     }
 
-    async findOne(waveId: string): Promise<GetWaveResponse> {
-        const getWaveRequest: GetWaveRequest = { waveId };
-        return firstValueFrom(this.wavesServiceClient.getWave(getWaveRequest));
+    async findOne(waveId: string): Promise<Wave> {
+        try {
+            const getWaveRequest: GetWaveRequest = { waveId };
+            console.log('Get Wave Request: ', getWaveRequest);
+            const result = firstValueFrom(this.wavesServiceClient.getWave(getWaveRequest)).catch(error => {
+                console.log('Raw gRPC error:', JSON.stringify(error, null, 2));
+                console.log('Error keys:', Object.keys(error));
+                console.log('error.code:', error.code);
+                console.log('error.details:', error.details);
+                console.log('error.message:', error.message);
+                if (error?.code === status.NOT_FOUND) {
+                    throw new NotFoundException(error.message);
+                }
+                throw new NotFoundException(error.message);
+            });
+            console.log('Result: ', result);
+            return result;
+        } catch (error: any) {
+            console.log('Error: ', error);
+            if (error?.code === status.NOT_FOUND) {
+                throw new NotFoundException(error.message);
+            }
+            throw new NotFoundException(error.message);
+        }
     }
 
     // async update(id: string, updatePostDto: UpdatePostDto): Promise<PostEntity> {}
 
-    // async remove(id: string): Promise<void> {}
+    async remove(id: string): Promise<DeleteWaveResponse> {
+        const deleteWaveRequest: DeleteWaveRequest = { waveId: id };
+        return firstValueFrom(this.wavesServiceClient.deleteWave(deleteWaveRequest));
+    }
 }
